@@ -14,26 +14,35 @@ const rotateAnimation = keyframes`
   }
 `;
 
+const Title = styled.h1`
+  color: ${(props) => props.theme.textColor};
+`;
+
 const Wrapper = styled.div`
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 const Emoji = styled.span`
-  font-size:36px;
+  font-size: 36px;
 `;
 
 const Box = styled.div`
   background-color: ${(props) => props.bgColor};
   width: 100px;
   height: 100px;
-  animation:${rotateAnimation} 1s linear infinite;
-  /* target for child */
-  ${Emoji}{ 
+  animation: ${rotateAnimation} 1s linear infinite;
+  // target for child
+  ${Emoji} {
     /** pseudo selector */
-    &:hover{
+    &:hover {
       font-size: 40px;
     }
-    &:active{
+    &:active {
       opacity: 0;
     }
   }
@@ -44,10 +53,10 @@ const Circle = styled(Box)`
 `;
 
 const Btn = styled.button`
-  color:white;
-  background-color:tomato;
-  border:0;
-  border-radius:15px;
+  color: white;
+  background-color: tomato;
+  border: 0;
+  border-radius: 15px;
 `;
 
 // const Input = styled.input.attrs({required : true, maxLength:10})`
