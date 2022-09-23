@@ -28,6 +28,7 @@ const rotationAnimation = keyframes`
 
 const Emoji = styled.span`
   font-size: 36px;
+  width: 30px;
 `;
 
 const Box = styled.div`
