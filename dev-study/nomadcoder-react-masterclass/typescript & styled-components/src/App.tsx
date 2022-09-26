@@ -1,5 +1,6 @@
 import Router from './Router';
 import { createGlobalStyle } from 'styled-components';
+import React from 'react';
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -64,10 +65,10 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
 	return (
-		<>
+		<React.StrictMode>
 			<GlobalStyle />
 			<Router />
-		</>
+		</React.StrictMode>
 	);
 }
 
