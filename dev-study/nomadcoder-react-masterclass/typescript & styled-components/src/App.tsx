@@ -65,10 +65,10 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
 	return (
-		<React.StrictMode>
+		<>
 			<GlobalStyle />
 			<Router />
-		</React.StrictMode>
+		</>
 	);
 }
 
