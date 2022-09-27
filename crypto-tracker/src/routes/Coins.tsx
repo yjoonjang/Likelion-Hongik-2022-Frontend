@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const Container = styled.div`
 	padding: 0px 20px;
 	max-width: 480px;
-	marin: 0 auto;
+	margin: 0 auto;
 `;
 
 const Header = styled.header`
@@ -24,9 +24,10 @@ const Coin = styled.li`
 	border-radius: 15px;
 	margin-bottom: 10px;
 	a {
+		display: flex;
+		align-items: center;
 		padding: 20px;
 		transition: color 0.2s ease-in;
-		display: block;
 	}
 	&:hover {
 		a {
@@ -55,6 +56,12 @@ interface CoinInterface {
 	type: string;
 }
 
+const Img = styled.img`
+	width: 35px;
+	height: 35px;
+	margin-right: 10px;
+`;
+
 function Coins() {
 	const [coins, setCoins] = useState<CoinInterface[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -73,12 +80,15 @@ function Coins() {
 				<Title>코인</Title>
 			</Header>
 			{loading ? (
-				<Loader>'Loading...'</Loader>
+				<Loader>Loading...</Loader>
 			) : (
 				<CoinsList>
 					{coins.map((coin) => (
 						<Coin key={coin.id}>
-							<Link to={`/${coin.id}`}>{coin.id} &rarr;</Link>
+							<Link to={{ pathname: `/${coin.id}`, state: { name: coin.name } }}>
+								<Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+								{coin.id} &rarr;
+							</Link>
 						</Coin>
 					))}
 				</CoinsList>
