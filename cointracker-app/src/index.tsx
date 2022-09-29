@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './theme'; 
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const rootElement = document.getElementById('root');
+if(!rootElement) throw new Error('Faliled to find the root element');
+const root = ReactDOM.createRoot(rootElement);
 root.render(
-    <App />
-); 
-reportWebVitals();
+<>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+</>
+);
