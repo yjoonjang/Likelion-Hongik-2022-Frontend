@@ -35,6 +35,7 @@ const CoinsList = styled.ul`
   gap: 1rem;
 `;
 
+
 const Title = styled.h1`
   font-size: 4rem;
   color: ${(props) => props.theme.accentColor};
@@ -72,7 +73,8 @@ const Tabs = styled.div`
   gap: 10px;
 `;
 
-const Tab = styled.span<{ isActive: boolean }>`
+// const Tab = styled.span<{ isActive: boolean }>`
+const Tab = styled.span`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -80,8 +82,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${(props) =>
-    props.isActive ? props.theme.accentColor : props.theme.textColor};
+  color: ${(props) => props.theme.accentColor};
   a {
     display: block;
   }
@@ -161,13 +162,13 @@ interface RouteState {
 }
 
 function Coin() {
-  const { state } = useLocation() as RouteState; 
   const { coinId } = useParams();
-  const priceMatch = useMatch("/:coinId/price");
-  const chartMatch = useMatch("/:coinId/chart");
+  const { state } = useLocation() as RouteState; 
+  // const priceMatch = useMatch(`/${state.id}/price`);
+  // const chartMatch = useMatch(`/${state.id}/chart`);
 
-  const {isLoading : infoLoading, data:infodata } = useQuery<IInfoData>(["info",coinId], ()=> fetchCoinInfo(coinId!));
-  const {isLoading : tickersLoading, data:tickersdata } = useQuery<IPriceData>(["ticker",coinId], ()=> fetchCoinTickers(coinId!));
+  const {isLoading : infoLoading, data:infodata } = useQuery<IInfoData>(["info",state.id], ()=> fetchCoinInfo(state.id!));
+  const {isLoading : tickersLoading, data:tickersdata } = useQuery<IPriceData>(["ticker",state.id], ()=> fetchCoinTickers(state.id!));
   const loading = infoLoading || tickersLoading;
   return (
     <Container>
@@ -206,15 +207,17 @@ function Coin() {
             </OverviewItem>
           </Overview>
           <Tabs>
-            <Tab isActive={chartMatch !== null}>
+            {/* <Tab isActive={chartMatch !== null}> */}
+            <Tab>
               <Routes>
-                <Route path="/price" element={<Price />} />
+                <Route path="/price" element={<Price coinId={state.id as string} />} />
               </Routes>
               Price
             </Tab>
-            <Tab isActive={priceMatch !== null}>
+            {/* <Tab isActive={priceMatch !== null}> */}
+            <Tab>
               <Routes>
-                <Route path="/chart" element={<Chart />} />
+                <Route path="/chart" element={<Chart coinId={state.id as string} />} />
               </Routes>
               Chart
             </Tab>
