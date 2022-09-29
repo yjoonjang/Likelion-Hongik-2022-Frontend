@@ -1,4 +1,5 @@
 import Router from "./routes/Router";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { createGlobalStyle } from "styled-components";
 
 //렌더링될 때, 전역 스코프에 글로벌 스타일을 선언
@@ -71,6 +72,7 @@ function App() {
     <>
       <GlobalStyle />
       <Router />
+      <ReactQueryDevtools />
     </>
   );
 }

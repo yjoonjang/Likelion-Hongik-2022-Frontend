@@ -1,14 +1,16 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components";
+import { fetchCoins } from "../api";
 
 interface RouteState {
   name : string;
  }
 
 //API로부터 Data를 fetch해오기 위한 인터페이스
-interface CoinInterface {
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -69,41 +71,19 @@ const Img = styled.img`
   height: 24px;
 `;
 
-function Coins() {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [isLoaded, setLoading] = useState<Boolean>(true);
-
-  // axios를 이용한 data response
-  const getCoinAPI = async () => {
-    const res = await axios("https://api.coinpaprika.com/v1/coins");
-    setCoins(res.data.slice(0, 40));
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getCoinAPI();
-  }, []);
-
-  // fetch를 이용한 data fetch
-  // useEffect(()=>{
-  //   (async()=>{
-  //     const res = await fetch("https://api.coinpaprika.com/v1/coins");
-  //     console.log(res);
-  //     const json = res.json();
-  //     console.log(json);
-  //   })();
-  // },[])
+function Coins() { 
+  const {isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
 
   return (
     <Container>
       <Header>
         <Title>Coin</Title>
       </Header>
-      {isLoaded ? (
+      {isLoading ? (
         "Loading..."
-      ) : (
+      ) : ( 
         <CoinsList>
-          {coins.map((coin) => (
+          {data?.slice(0,40).map((coin) => (
             <Coin key={coin.id}>
               <Link to={`/${coin.id}`} state={coin}>
                 <Img

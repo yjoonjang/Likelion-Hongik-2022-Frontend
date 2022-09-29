@@ -6,11 +6,12 @@ import {
   useMatch,
   Outlet,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components";
-import axios from "axios";
 import Price from "./Price";
 import Chart from "./Chart";
+import { fetchCoinInfo } from "../api";
+import { fetchCoinTickers } from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -151,73 +152,57 @@ interface IPriceData {
   };
 }
 
+interface RouteParms{
+  coinId: string;
+}
+
 interface RouteState {
   state: { id: string; name: string };
 }
 
 function Coin() {
-  const [isLoaded, setLoading] = useState<Boolean>(true);
-  const { coinId } = useParams();
   const { state } = useLocation() as RouteState; 
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
+  const { coinId } = useParams();
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-  console.log(priceMatch);
-  console.log(chartMatch);
 
-  // axios를 이용한 data response
-  const getCoinDetailAPI = async () => {
-    const info_res = await axios(
-      `https://api.coinpaprika.com/v1/coins/` + state.id
-    );
-    setInfo(info_res.data);
-    const price_res = await axios(
-      `https://api.coinpaprika.com/v1/tickers/` + state.id
-    );
-    setPriceInfo(price_res.data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getCoinDetailAPI();
-  }, [state]);
-  // coinId never gonna change
-
+  const {isLoading : infoLoading, data:infodata } = useQuery<IInfoData>(["info",coinId], ()=> fetchCoinInfo(coinId!));
+  const {isLoading : tickersLoading, data:tickersdata } = useQuery<IPriceData>(["ticker",coinId], ()=> fetchCoinTickers(coinId!));
+  const loading = infoLoading || tickersLoading;
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : isLoaded ? "Loading..." : info?.name}
+          {state?.name ? state.name : loading ? "Loading..." : infodata ?.name}
         </Title>
       </Header>
-      {isLoaded ? (
+      {loading ? (
         "Loading..."
       ) : (
         <>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infodata?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infodata?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{infodata?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infodata?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersdata?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersdata?.max_supply}</span>
             </OverviewItem>
           </Overview>
           <Tabs>
@@ -233,8 +218,7 @@ function Coin() {
               </Routes>
               Chart
             </Tab>
-          </Tabs
-          <Outlet /> 
+          </Tabs>
         </>
       )}
     </Container>
