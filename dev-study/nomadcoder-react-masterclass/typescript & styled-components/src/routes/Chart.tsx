@@ -17,8 +17,12 @@ interface IChart {
 }
 
 const Chart = ({ coinId }: IChart) => {
-	const { isLoading, data } = useQuery<IData[]>(['ohlcv', coinId], () =>
-		fetchCoinHistory(coinId),
+	const { isLoading, data } = useQuery<IData[]>(
+		['ohlcv', coinId],
+		() => fetchCoinHistory(coinId),
+		{
+			refetchInterval: 5000,
+		},
 	);
 
 	return (
